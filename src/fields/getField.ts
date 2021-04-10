@@ -1,23 +1,11 @@
-import { StoreKeys, getItem, setItem } from "../Store";
+import { getItem } from "../Store";
 
-type GetFieldParam = {
-  tableName: string;
-  fieldName: string;
-  id: string
-};
+export function getField(id: string) {
 
-export function getField(data: GetFieldParam) {
-  const internalId = `${data.tableName}_${data.fieldName}_${data.id}`;
-
-  return getItem(StoreKeys.TABLE_FIELDS)
-    .then(parseTableFields)
-    .then()
+  return getItem(id)
+    .then(parseData);
 }
 
-function parseTableFields(tableFields: string | null) {
-  return JSON.parse(tableFields || "[]");
+function parseData(data: string | null) {
+  return JSON.parse(data || "null");
 }
-
-// function findId(id: string) {
-//   return (storedFields)
-// }
