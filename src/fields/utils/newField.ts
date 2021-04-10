@@ -1,5 +1,5 @@
 import { v4 as uuid } from "react-native-uuid";
-import { setItem } from "../Store";
+import { setItem } from "../../Store";
 
 type NewFieldParam = {
   tableName: string;

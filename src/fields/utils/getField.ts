@@ -1,4 +1,4 @@
-import { getItem } from "../Store";
+import { getItem } from "../../Store";
 
 export function getField(id: string) {
 

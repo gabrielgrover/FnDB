@@ -1,5 +1,5 @@
 import { newField } from "./newField";
-import { getItem } from "../Store";
+import { getItem } from "../../Store";
 
 describe("newField", () => {
   it("should return an internalId", async () => {

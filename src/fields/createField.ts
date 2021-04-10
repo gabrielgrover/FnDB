@@ -1,4 +1,4 @@
-import { newField } from "./newField";
+import { newField } from "./utils/newField";
 
 // type CreateFieldFn = typeof createBooleanField | typeof createNumberField | typeof createStringField;0
 
