@@ -1,4 +1,4 @@
-import { newDoc as _newDoc, getDoc } from "./internal_utils";
+import { newDoc as _newDoc, getDoc as _getDoc } from "./internal_utils";
 import { Field, FieldMetaData } from "../field";
 
 // type DictionaryConstructor = () => Record<string, number | string | boolean>;
@@ -15,6 +15,27 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
 
       return result;
     }, {} as { [key in keyof T]: FieldMetaData });
+
+  async function getDoc(id: string) {
+    const fieldIdRecord = await _getDoc({ modelName, id });
+    const fieldData = await Promise.all(
+      Object.entries(fieldIdRecord)
+        .map(([fieldName, fieldId]) => {
+          const getField = fieldMetaData[fieldName].createGetFn(modelName);
+
+          return getField(fieldId).then((data: any) => ({
+            ...data,
+            fieldName
+          }));
+        })
+    );
+
+    return fieldData.reduce((result, field) => {
+      result[field.fieldName] = field.data;
+
+      return result;
+    }, {}) as { [key in keyof T]: ReturnType<T[key]> };
+  };
 
   async function newDoc(input: { [key in keyof T]: ReturnType<T[key]> }) {
     const fieldIdRecord = await Promise.all(
@@ -39,32 +60,11 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
     return (await _newDoc(modelName, fieldIdRecord)).id;
   };
 
-  async function get(id: string) {
-    const fieldIdRecord = await getDoc({ modelName, id });
-    const fieldData = await Promise.all(
-      Object.entries(fieldIdRecord)
-        .map(([fieldName, fieldId]) => {
-          const getField = fieldMetaData[fieldName].createGetFn(modelName);
-
-          return getField(fieldId).then((data: any) => ({
-            ...data,
-            fieldName
-          }));
-        })
-    );
-
-    return fieldData.reduce((result, field) => {
-      result[field.fieldName] = field.data;
-
-      return result;
-    }, {} as { [key in keyof T]: ReturnType<T[key]> });
-  };
-
   return {
     modelName,
+    getDoc,
     newDoc,
-    update: () => { },
-    get
+    updateDoc: () => { },
   };
 }
 

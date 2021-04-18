@@ -16,8 +16,8 @@ describe("createModel", () => {
     });
 
     expect(User.newDoc).toBeTruthy();
-    expect(User.update).toBeTruthy();
-    expect(User.get).toBeTruthy();
+    expect(User.updateDoc).toBeTruthy();
+    expect(User.getDoc).toBeTruthy();
   });
 });
 
@@ -58,10 +58,36 @@ describe("get model by id", () => {
   });
 
   it("should return the model", async () => {
-    const user = await User.get(id);
+    const user = await User.getDoc(id);
 
     expect(user.name).toBe("duder");
     expect(user.admin).toBe(true);
     expect(user.age).toBe(1);
   });
+});
+
+describe("update model", () => {
+  const User = createModel("User", {
+    age: Number,
+    name: String,
+    admin: Boolean
+  });
+  let id: string;
+
+  beforeEach(async () => {
+    id = await User.newDoc({
+      admin: true,
+      name: "duder",
+      age: 1
+    });
+  });
+
+  it("should update the given model properties", async () => {
+    await User.updateDoc(id, { admin: false, age: 2 });
+    const updateUser = await User.getDoc(id);
+
+    expect(updateUser.name).toBe("duder")
+    expect(updateUser.admin).toBe(false);
+    expect(updateUser.age).toBe(2);
+  })
 });
