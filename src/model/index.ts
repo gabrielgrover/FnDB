@@ -21,9 +21,9 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
     const fieldData = await Promise.all(
       Object.entries(fieldIdRecord)
         .map(([fieldName, fieldId]) => {
-          const getField = fieldMetaData[fieldName].createGetFn(modelName);
+          const getFieldFn = fieldMetaData[fieldName].createGetFn(modelName);
 
-          return getField(fieldId).then((data: any) => ({
+          return getFieldFn(fieldId).then((data: any) => ({
             ...data,
             fieldName
           }));
@@ -43,8 +43,8 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
         .map(([fieldName, fieldData]) => {
           //we need to use as never and as any until typescript 4.0 since the typescript's type definition
           //of Promise.all does not work well with arrays of variadic types.
-          const newFieldMetadata = fieldMetaData[fieldName].createSaveFn(modelName)(fieldData as never) as Promise<any>;
-          return newFieldMetadata.then(f => ({
+          const saveFieldPromise = fieldMetaData[fieldName].createSaveFn(modelName)(fieldData as never) as Promise<any>;
+          return saveFieldPromise.then(f => ({
             ...f,
             fieldName
           }));
@@ -60,11 +60,28 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
     return (await _newDoc(modelName, fieldIdRecord)).id;
   };
 
+  async function updateDoc(
+    id: string, 
+    updates: Partial<{[key in keyof T]: ReturnType<T[key]>}>
+  ) {
+    const fieldIdRecord = await _getDoc({ modelName, id });
+
+    return Promise.all(
+      Object.entries(updates)
+        .map(([updatedFieldName, updatedFieldData]) => {
+          const updateFieldFn = fieldMetaData[updatedFieldName].createUpdateFn(modelName);
+          const fieldId = fieldIdRecord[updatedFieldName];
+
+          return updateFieldFn(fieldId, updatedFieldData as never) as any;
+        })
+    ).then(() => {});
+  }
+
   return {
     modelName,
     getDoc,
     newDoc,
-    updateDoc: () => { },
+    updateDoc
   };
 }
 
