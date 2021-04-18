@@ -1,7 +1,7 @@
-[FnDB]() – The React Native Document based database/ORM
+[FnDB]() – The React Native Document database/ORM
 =========
 
-FnDB is an open-source document based database and ORM for React Native.
+FnDB is an open-source document database and ORM for React Native.
 
 FnDB was created to help react native developers build offline first applications.
 
