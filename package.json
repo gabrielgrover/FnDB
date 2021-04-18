@@ -1,10 +1,13 @@
 {
   "name": "fndb",
   "version": "0.0.1",
-  "private": true,
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "files": ["build/**/*"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gabrielgrover/FnDB"
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
