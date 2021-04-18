@@ -5302,11 +5302,6 @@ react-native-codegen@^0.0.6:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
-react-native-sqlite-storage@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-sqlite-storage/-/react-native-sqlite-storage-5.0.0.tgz#fb015c928b59d3000360fb0774a99545e7a695d6"
-  integrity sha512-c1Joq3/tO1nmIcP8SkRZNolPSbfvY8uZg5lXse0TmjIPC0qHVbk96IMvWGyly1TmYCIpxpuDRc0/xCffDbYIvg==
-
 react-native-uuid@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-native-uuid/-/react-native-uuid-2.0.0.tgz#997cdebdbd015a176bd4e172f8a04764a8ccc95f"
