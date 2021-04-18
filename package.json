@@ -2,13 +2,18 @@
   "name": "fndb",
   "version": "0.0.1",
   "private": true,
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": ["build/**/*"],
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build": "yarn clean; tsc",
+    "clean": "rm -rf ./build"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.1",

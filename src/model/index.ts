@@ -21,9 +21,9 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
     const fieldData = await Promise.all(
       Object.entries(fieldIdRecord)
         .map(([fieldName, fieldId]) => {
-          const getFieldFn = fieldMetaData[fieldName].createGetFn(modelName);
+          const getFieldFn = fieldMetaData[fieldName].createGetFn(modelName) as (id: string) => Promise<any>;
 
-          return getFieldFn(fieldId).then((data: any) => ({
+          return getFieldFn(fieldId).then((data) => ({
             ...data,
             fieldName
           }));
