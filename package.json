@@ -6,6 +6,7 @@
   "files": [
     "build/**/*"
   ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/gabrielgrover/FnDB"
