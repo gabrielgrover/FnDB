@@ -13,6 +13,34 @@ describe("getDoc", () => {
     id = _id;
   });
 
+  it("should reject with an error if id is empty", async () => {
+    let err;
+    try {
+      await getDoc({
+        modelName: "User",
+        id: ""
+      });
+    } catch (e) {
+      err = e;  
+    }
+
+    expect(err.message).toBe("Provided model id not found.");
+  });
+
+  it("should reject with an error if doc is not found", async () => {
+    let err;
+    try {
+      await getDoc({
+        modelName: "User",
+        id: "1234"
+      })
+    } catch (e) {
+      err = e;    
+    }
+
+    expect(err.message).toBe("No model found for\n{\n\tmodelName: User,\n\tid: 1234\n}\n");
+  });
+
   it("should return a field name to field id record", async () => {
     const fieldIdRecord = await getDoc({
       modelName: "User",

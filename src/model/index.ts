@@ -17,64 +17,76 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
     }, {} as { [key in keyof T]: FieldMetaData });
 
   async function getDoc(id: string) {
-    const fieldIdRecord = await _getDoc({ modelName, id });
-    const fieldData = await Promise.all(
-      Object.entries(fieldIdRecord)
-        .map(([fieldName, fieldId]) => {
-          const getFieldFn = fieldMetaData[fieldName].createGetFn(modelName) as (id: string) => Promise<any>;
+    try {
+      const fieldIdRecord = await _getDoc({ modelName, id });
+      const fieldData = await Promise.all(
+        Object.entries(fieldIdRecord)
+          .map(([fieldName, fieldId]) => {
+            const getFieldFn = fieldMetaData[fieldName].createGetFn(modelName) as (id: string) => Promise<any>;
 
-          return getFieldFn(fieldId).then((data) => ({
-            ...data,
-            fieldName
-          }));
-        })
-    );
+            return getFieldFn(fieldId).then((data) => ({
+              ...data,
+              fieldName
+            }));
+          })
+      );
 
-    return fieldData.reduce((result, field) => {
-      result[field.fieldName] = field.data;
+      return fieldData.reduce((result, field) => {
+        result[field.fieldName] = field.data;
 
-      return result;
-    }, {}) as { [key in keyof T]: ReturnType<T[key]> };
+        return result;
+      }, {}) as { [key in keyof T]: ReturnType<T[key]> };
+    } catch (err) {
+      return Promise.reject(err);
+    }
   };
 
   async function newDoc(input: { [key in keyof T]: ReturnType<T[key]> }) {
-    const fieldIdRecord = await Promise.all(
-      Object.entries(input)
-        .map(([fieldName, fieldData]) => {
-          //we need to use as never and as any until typescript 4.0 since the typescript's type definition
-          //of Promise.all does not work well with arrays of variadic types.
-          const saveFieldPromise = fieldMetaData[fieldName].createSaveFn(modelName)(fieldData as never) as Promise<any>;
-          return saveFieldPromise.then(f => ({
-            ...f,
-            fieldName
-          }));
-        })
-    ).then((fields: any[]) => {
-      return fields.reduce((result, field) => {
-        result[field.fieldName] = field.id;
+    try {
+      const fieldIdRecord = await Promise.all(
+        Object.entries(input)
+          .map(([fieldName, fieldData]) => {
+            //we need to use as never and as any until typescript 4.0 since the typescript's type definition
+            //of Promise.all does not work well with arrays of variadic types.
+            const saveFieldPromise = fieldMetaData[fieldName].createSaveFn(modelName)(fieldData as never) as Promise<any>;
+            return saveFieldPromise.then(f => ({
+              ...f,
+              fieldName
+            }));
+          })
+      ).then((fields: any[]) => {
+        return fields.reduce((result, field) => {
+          result[field.fieldName] = field.id;
 
-        return result;
-      }, {} as Record<string, string>);
-    });
+          return result;
+        }, {} as Record<string, string>);
+      });
 
-    return (await _newDoc(modelName, fieldIdRecord)).id;
+      return (await _newDoc(modelName, fieldIdRecord)).id;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   };
 
   async function updateDoc(
-    id: string, 
-    updates: Partial<{[key in keyof T]: ReturnType<T[key]>}>
+    id: string,
+    updates: Partial<{ [key in keyof T]: ReturnType<T[key]> }>
   ) {
-    const fieldIdRecord = await _getDoc({ modelName, id });
+    try {
+      const fieldIdRecord = await _getDoc({ modelName, id });
 
-    return Promise.all(
-      Object.entries(updates)
-        .map(([updatedFieldName, updatedFieldData]) => {
-          const updateFieldFn = fieldMetaData[updatedFieldName].createUpdateFn(modelName);
-          const fieldId = fieldIdRecord[updatedFieldName];
+      await Promise.all(
+        Object.entries(updates)
+          .map(([updatedFieldName, updatedFieldData]) => {
+            const updateFieldFn = fieldMetaData[updatedFieldName].createUpdateFn(modelName);
+            const fieldId = fieldIdRecord[updatedFieldName];
 
-          return updateFieldFn(fieldId, updatedFieldData as never) as any;
-        })
-    ).then(() => {});
+            return updateFieldFn(fieldId, updatedFieldData as never) as any;
+          })
+      );
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   return {
