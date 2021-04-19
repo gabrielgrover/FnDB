@@ -17,7 +17,7 @@ Using FnDB
     admin: Boolean
   });
 
-  const { id } = await User.newDoc({
+  const id = await User.newDoc({
     name: "duder",
     age: 21,
     admin: true
