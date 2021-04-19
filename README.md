@@ -9,7 +9,7 @@ Using FnDB
 -------------
 
 ```typescript
-  import { createModel } from "FnDB";
+  import { createModel } from "fndb";
 
   const User = createModel("User", {
     name: String,
