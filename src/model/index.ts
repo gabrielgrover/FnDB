@@ -62,7 +62,9 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
         }, {} as Record<string, string>);
       });
 
-      return (await _newDoc(modelName, fieldIdRecord)).id;
+      const { id } = await _newDoc(modelName, fieldIdRecord);
+
+      return id;
     } catch (err) {
       return Promise.reject(err);
     }
