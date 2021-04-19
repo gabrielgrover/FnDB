@@ -23,7 +23,7 @@ Using FnDB
     admin: true
   });
 
-  await User.getDoc(id);
+  const { name, age, admin } = await User.getDoc(id);
 
   await User.updateDoc(id, {
     admin: false
