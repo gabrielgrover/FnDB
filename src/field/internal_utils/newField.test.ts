@@ -3,6 +3,33 @@ import { getInternalId } from "./fieldId";
 import { getItem } from "../../Store";
 
 describe("newField", () => {
+  it("should throw error if data is undefined or null", async () => {
+    let err;
+    let err2;
+    try {
+      await newField({
+        tableName: "some_table",
+        fieldName: "field01",
+        data: null
+      });
+    } catch (e) {
+      err = e;
+    }
+
+    try {
+      await newField({
+        tableName: "some_table",
+        fieldName: "field01",
+        data: undefined
+      })
+    } catch (e) {
+      err2 = e 
+    }
+
+    expect(err.message).toBe("Data cannot be null or undefined.");
+    expect(err2.message).toBe("Data cannot be null or undefined.");
+  });
+
   it("should return id, internalId, and data", async () => {
     const { id, internalId, data } = await newField({
       tableName: "table",

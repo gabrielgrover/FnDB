@@ -14,6 +14,38 @@ describe("getField", () => {
     id = _id;
   });
 
+  it("should reject with error if id is empty", async () => {
+    let err;
+
+    try {
+      await getField<any>({
+        tableName: "table",
+        fieldName: "field",
+        id: ""
+      })
+    } catch (e) {
+      err = e;
+    }
+
+    expect(err.message).toBe("Provided field id not found.");
+  });
+
+  it("should reject with error if no field data was found", async () => {
+    let err;
+    try {
+      await getField({
+        tableName: "some_table",
+        fieldName: "some_field",
+        id: "some_id"
+      });
+    } catch (e) {
+      err = e;  
+    }
+
+    expect(err.message)
+      .toBe("No field data found for\n{\n\ttableName: some_table,\n\tfieldName: some_field,\n\tid: some_id\n}\n");
+  });
+
   it("should return the data in the field", async () => {
     const { data, id: receivedId, internalId: receivedInternalId } = await getField<string>({
       tableName: "User",

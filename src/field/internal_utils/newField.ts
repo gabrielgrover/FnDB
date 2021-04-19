@@ -8,6 +8,10 @@ type NewFieldParam = {
 };
 
 export function newField(data: NewFieldParam) {
+  if (data.data === null || data.data === undefined) {
+    return Promise.reject(new Error("Data cannot be null or undefined."));
+  }
+
   const { internalId, id } = createFieldId({
     tableName: data.tableName,
     fieldName: data.fieldName

@@ -9,6 +9,10 @@ type UpdateFieldParam = {
 };
 
 export function updateField(updateParam: UpdateFieldParam) {
+  if (updateParam.data === null || updateParam.data === undefined) {
+    return Promise.reject(new Error("Data cannot be null or undefined."));
+  }
+
   const internalId = getInternalId({
     tableName: updateParam.tableName,
     fieldName: updateParam.fieldName,

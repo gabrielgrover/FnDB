@@ -40,6 +40,35 @@ describe("updateField", () => {
     expect(err.message).toBe(`field id, ${expectedInternalId} not found.`);
   });
 
+  it("should reject with error if data is undefined or null", async () => {
+    let err1;
+    let err2;
+    try {
+      await updateField({
+        tableName: "User",
+        fieldName: "age",
+        id: "123",
+        data: null
+      })
+    } catch (e) {
+      err1 = e;  
+    }
+
+    try {
+      await updateField({
+        tableName: "User",
+        fieldName: "age",
+        id: "123",
+        data: null
+      })
+    } catch (e) {
+      err2 = e;  
+    }
+
+    expect(err1.message).toBe("Data cannot be null or undefined.");
+    expect(err2.message).toBe("Data cannot be null or undefined.");
+  });
+
   it("should return an id data tuple", async () => {
     const { data, id: receivedId } = await updateField({
       tableName: "User",

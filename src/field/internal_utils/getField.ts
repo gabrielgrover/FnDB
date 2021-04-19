@@ -8,10 +8,14 @@ type GetFieldParam = {
 };
 
 export function getField<T>(getFieldParam: GetFieldParam) {
+  if (!getFieldParam.id) {
+    return Promise.reject(new Error("Provided field id not found."));
+  }
+
   const internalId = getInternalId(getFieldParam);
 
   return getItem(internalId)
-    .then(parseData)
+    .then(parseData(getFieldParam))
     .then(data => ({
       data: data as T,
       id: getFieldParam.id,
@@ -19,6 +23,12 @@ export function getField<T>(getFieldParam: GetFieldParam) {
     }));
 }
 
-function parseData(data: string | null) {
-  return JSON.parse(data || "null");
+function parseData(getFieldParam: GetFieldParam) {
+  return (data: string | null) => {
+    if (!data) {
+      const msg = `No field data found for\n{\n\ttableName: ${getFieldParam.tableName},\n\tfieldName: ${getFieldParam.fieldName},\n\tid: ${getFieldParam.id}\n}\n`;
+      return Promise.reject(new Error(msg));
+    }
+    return JSON.parse(data);
+  };
 }
