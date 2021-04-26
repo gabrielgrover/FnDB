@@ -2935,6 +2935,14 @@ flow-parser@^0.121.0:
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.121.0.tgz#9f9898eaec91a9f7c323e9e992d81ab5c58e618f"
   integrity sha512-1gIBiWJNR0tKUNv8gZuk7l9rVX06OuLzY9AoGio7y/JT4V1IZErEMEq2TJS+PFcw/y0RshZ1J/27VfK1UQzYVg==
 
+fndb@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/fndb/-/fndb-0.0.5.tgz#8da7b7fcae19c0baa6028c55af570363559b0fe1"
+  integrity sha512-5o7QeG+TxoRLUHZvnKwdESXkmoKoWv+VZNuTu88lyb8/oEKoC5+8vW1rN8z5UU5pqK+cz67xJvGgG+a7Gz2N8Q==
+  dependencies:
+    "@react-native-async-storage/async-storage" "^1.15.1"
+    react-native-uuid "^2.0.0"
+
 for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
