@@ -43,7 +43,7 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
 
   async function newDoc(input: { [key in keyof T]: ReturnType<T[key]> }) {
     try {
-      const fieldIdRecord = await Promise.all(
+      const fields = await Promise.all(
         Object.entries(input)
           .map(([fieldName, fieldData]) => {
             const saveFieldFn = fieldMetaData[fieldName].createSaveFn(modelName);
@@ -51,13 +51,14 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
             return saveFieldFn(fieldData as never)
               .then((f: any) => ({ ...f, fieldName })) as Promise<any>;
           })
-      ).then((fields) => {
-        return fields.reduce((result, field) => {
-          result[field.fieldName] = field.id;
+      );
 
-          return result;
-        }, {} as Record<string, string>);
-      });
+      const fieldIdRecord = fields.reduce((result, field) => {
+        result[field.fieldName] = field.id;
+
+        return result;
+      }, {} as Record<string, string>);
+
 
       const { id } = await _newDoc(modelName, fieldIdRecord);
 
