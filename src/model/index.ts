@@ -46,15 +46,12 @@ export function createModel<T extends Model>(modelName: string, modelParam: T) {
       const fieldIdRecord = await Promise.all(
         Object.entries(input)
           .map(([fieldName, fieldData]) => {
-            //we need to use as never and as any until typescript 4.0 since the typescript's type definition
-            //of Promise.all does not work well with arrays of variadic types.
-            const saveFieldPromise = fieldMetaData[fieldName].createSaveFn(modelName)(fieldData as never) as Promise<any>;
-            return saveFieldPromise.then(f => ({
-              ...f,
-              fieldName
-            }));
+            const saveFieldFn = fieldMetaData[fieldName].createSaveFn(modelName);
+
+            return saveFieldFn(fieldData as never)
+              .then((f: any) => ({ ...f, fieldName })) as Promise<any>;
           })
-      ).then((fields: any[]) => {
+      ).then((fields) => {
         return fields.reduce((result, field) => {
           result[field.fieldName] = field.id;
 
